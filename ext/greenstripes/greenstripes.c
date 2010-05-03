@@ -452,7 +452,9 @@ static VALUE playlist_pending_changes(VALUE self)
 static VALUE playlist_add_tracks(VALUE self, VALUE tracks, VALUE position)
 {
   sp_playlist *p;
+  sp_session *session;
   Data_Get_Struct(self, sp_playlist, p);
+  Data_Get_Struct(self, sp_session, session);
   int n = rb_ary_length(tracks);
   const sp_track **ts = malloc(n*sizeof(sp_track *));
   int i;
@@ -462,7 +464,7 @@ static VALUE playlist_add_tracks(VALUE self, VALUE tracks, VALUE position)
     Data_Get_Struct(rb_ary_entry(tracks, i), sp_track, t);
     ts[i] = t;
   }
-  sp_error e = sp_playlist_add_tracks(p, ts, n, FIX2INT(position));
+  sp_error e = sp_playlist_add_tracks(p, ts, n, FIX2INT(position), session);
   free(ts);
   return INT2FIX(e);
 }
